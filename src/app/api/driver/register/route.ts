@@ -11,7 +11,12 @@ export async function POST(request: Request) {
         if (!name || !email || !password || !licenseNumber) {
             return NextResponse.json(
                 { error: 'Tous les champs sont requis.' },
-                { status: 400 }
+                {
+                    status: 400,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                }
             );
         }
 
@@ -23,7 +28,12 @@ export async function POST(request: Request) {
         if (existingDriver) {
             return NextResponse.json(
                 { error: 'Cet email est déjà utilisé.' },
-                { status: 409 }
+                {
+                    status: 409,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                }
             );
         }
 
