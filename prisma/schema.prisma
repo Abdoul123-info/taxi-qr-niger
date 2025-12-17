@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Driver {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  name          String?
+  phone         String?
+  photoUrl      String?
+  licenseNumber String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  taxis         Taxi[]
+}
+
+model Taxi {
+  id          String     @id @default(uuid())
+  plateNumber String     @unique
+  model       String
+  status      String     @default("AVAILABLE")
+  driverId    String?
+  qrCodeUrl   String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  company     String?
+  doorNumber  String?
+  incidents   Incident[]
+  lostItems   LostItem[]
+  driver      Driver?    @relation(fields: [driverId], references: [id])
+}
+
+model Incident {
+  id               String   @id @default(uuid())
+  type             String
+  description      String
+  taxiId           String?
+  occurrenceDate   DateTime @default(now())
+  createdAt        DateTime @default(now())
+  location         String?
+  reporterName     String?
+  reporterPhone    String?
+  reporterQuartier String?
+  taxi             Taxi?    @relation(fields: [taxiId], references: [id])
+}
+
+model LostItem {
+  id               String   @id @default(uuid())
+  description      String
+  contactInfo      String
+  taxiId           String?
+  status           String   @default("REPORTED")
+  occurrenceDate   DateTime @default(now())
+  createdAt        DateTime @default(now())
+  location         String?
+  reporterName     String?
+  reporterPhone    String?
+  reporterQuartier String?
+  taxi             Taxi?    @relation(fields: [taxiId], references: [id])
+}
