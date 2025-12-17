@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+// Updated: 2025-12-17 04:55 - Force rebuild
 
 export default async function AdminIncidentsPage() {
     const incidents = await prisma.incident.findMany({
