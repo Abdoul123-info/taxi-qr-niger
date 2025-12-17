@@ -34,7 +34,7 @@ export default async function AdminIncidentsPage() {
                                         {new Date(incident.createdAt).toLocaleDateString()}
                                     </td>
                                     <td className="p-4 font-bold text-gray-800">
-                                        {incident.taxi.plateNumber}
+                                        {incident.taxi?.plateNumber || <span className="text-gray-400 italic">Inconnu</span>}
                                     </td>
                                     <td className="p-4 text-gray-700">
                                         {incident.description}

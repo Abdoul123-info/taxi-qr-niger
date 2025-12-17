@@ -35,7 +35,7 @@ export default async function AdminLostFoundPage() {
                                         {new Date(item.createdAt).toLocaleDateString()}
                                     </td>
                                     <td className="p-4 font-bold text-gray-800">
-                                        {item.taxi.plateNumber}
+                                        {item.taxi?.plateNumber || <span className="text-gray-400 italic">Inconnu</span>}
                                     </td>
                                     <td className="p-4 text-gray-700">
                                         {item.description}
