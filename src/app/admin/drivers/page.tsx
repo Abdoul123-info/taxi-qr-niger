@@ -10,7 +10,7 @@ export default async function DriverListPage() {
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Gestion des Chauffeurs</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Liste des Chauffeurs (App Mobile)</h1>
                 {/* 
                 <Link
                     href="/admin/drivers/new"
