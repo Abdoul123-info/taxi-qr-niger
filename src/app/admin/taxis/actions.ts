@@ -22,3 +22,21 @@ export async function assignDriver(taxiId: string, driverId: string) {
         return { error: "Erreur lors de l'assignation" };
     }
 }
+
+export async function validateTaxi(taxiId: string) {
+    if (!taxiId) return { error: "ID du taxi manquant" };
+
+    try {
+        await prisma.taxi.update({
+            where: { id: taxiId },
+            data: { status: 'AVAILABLE' } // Validate the taxi
+        });
+
+        revalidatePath('/admin/taxis');
+        revalidatePath('/admin/taxis/validate');
+        return { success: true };
+    } catch (error) {
+        console.error("Validate Taxi Error:", error);
+        return { error: "Erreur lors de la validation" };
+    }
+}

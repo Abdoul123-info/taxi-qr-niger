@@ -107,6 +107,7 @@ export async function PATCH(request: Request) {
                         doorNumber: taxi.doorNumber,
                         company: taxi.company,
                         driverId: id,
+                        status: 'PENDING_ADMIN', // Requires admin approval
                     }
                 });
             }

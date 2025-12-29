@@ -4,20 +4,38 @@ export const dynamic = 'force-dynamic';
 
 export default async function TaxiListPage() {
     const taxis = await prisma.taxi.findMany({
-        include: { driver: true }, // Include driver relations
+        where: {
+            NOT: { status: 'PENDING_ADMIN' }
+        },
+        include: { driver: true },
         orderBy: { createdAt: 'desc' }
+    });
+
+    const pendingCount = await prisma.taxi.count({
+        where: { status: 'PENDING_ADMIN' }
     });
 
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-gray-800">Gestion des Taxis</h1>
-                <Link
-                    href="/admin/taxis/new"
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-bold shadow-sm transition"
-                >
-                    + Nouveau Taxi
-                </Link>
+                <div className="flex space-x-3">
+                    {pendingCount > 0 && (
+                        <Link
+                            href="/admin/taxis/validate"
+                            className="bg-orange-100 text-orange-700 border border-orange-200 px-4 py-2 rounded font-bold hover:bg-orange-200 transition flex items-center animate-pulse"
+                        >
+                            <span className="mr-2">🔔</span>
+                            {pendingCount} Nouveau(x) Taxi(s)
+                        </Link>
+                    )}
+                    <Link
+                        href="/admin/taxis/new"
+                        className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded font-bold shadow-sm transition"
+                    >
+                        + Créer Manuellement
+                    </Link>
+                </div>
             </div>
 
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
