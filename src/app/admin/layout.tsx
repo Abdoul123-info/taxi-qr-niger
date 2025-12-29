@@ -12,7 +12,7 @@ export default function AdminLayout({
       <aside className="w-full md:w-64 bg-green-900 text-white flex-shrink-0">
         <div className="p-6 border-b border-green-800">
           <h1 className="text-2xl font-bold text-orange-400">Admin Taxi</h1>
-          <p className="text-xs text-green-200 uppercase tracking-widest mt-1">Niger System</p>
+          <p className="text-xs text-green-200 uppercase tracking-widest mt-1">NIGER SYSTEM</p>
         </div>
         <nav className="p-4 space-y-2">
           <NavLink href="/admin" label="Tableau de Bord" icon="dashboard" />

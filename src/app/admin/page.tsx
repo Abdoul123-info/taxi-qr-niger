@@ -7,7 +7,8 @@ const db = new PrismaClient();
 
 export default async function AdminDashboard() {
     // Fetch stats (mocking or real if DB ready)
-    const taxiCount = await db.taxi.count();
+    const taxiCount = await db.taxi.count({ where: { NOT: { status: 'PENDING_ADMIN' } } });
+    const pendingTaxiCount = await db.taxi.count({ where: { status: 'PENDING_ADMIN' } });
     const incidentCount = await db.incident.count();
     const lostItemCount = await db.lostItem.count();
 
@@ -40,13 +41,18 @@ export default async function AdminDashboard() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <Link
-                        href="/admin/taxis/new"
-                        className="flex flex-col items-center justify-center p-6 bg-green-50 border border-green-100 rounded-lg hover:bg-green-100 transition cursor-pointer group"
+                        href="/admin/taxis/validate"
+                        className="relative flex flex-col items-center justify-center p-6 bg-green-50 border border-green-100 rounded-lg hover:bg-green-100 transition cursor-pointer group"
                     >
+                        {pendingTaxiCount > 0 && (
+                            <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full animate-bounce">
+                                {pendingTaxiCount}
+                            </div>
+                        )}
                         <div className="h-12 w-12 bg-green-200 text-green-700 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition">
                             +
                         </div>
-                        <span className="font-semibold text-green-900">Ajouter un Taxi</span>
+                        <span className="font-semibold text-green-900 text-center">Ajouter un Taxi (Validation)</span>
                     </Link>
 
                     <Link
@@ -56,7 +62,7 @@ export default async function AdminDashboard() {
                         <div className="h-12 w-12 bg-orange-200 text-orange-700 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition">
                             QR
                         </div>
-                        <span className="font-semibold text-orange-900">Gérer les Codes QR</span>
+                        <span className="font-semibold text-orange-900 text-center">Gérer les Codes QR</span>
                     </Link>
                 </div>
             </div>
