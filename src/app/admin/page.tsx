@@ -1,16 +1,13 @@
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma'; // We will create this lib file
-import { PrismaClient } from '@prisma/client';
-
-// Quick Prisma instantiation for Server Components if lib not ready
-const db = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-    // Fetch stats (mocking or real if DB ready)
-    const taxiCount = await db.taxi.count({ where: { NOT: { status: 'PENDING_ADMIN' } } });
-    const pendingTaxiCount = await db.taxi.count({ where: { status: 'PENDING_ADMIN' } });
-    const incidentCount = await db.incident.count();
-    const lostItemCount = await db.lostItem.count();
+    // Fetch stats using shared prisma instance
+    const taxiCount = await prisma.taxi.count({ where: { NOT: { status: 'PENDING_ADMIN' } } });
+    const pendingTaxiCount = await prisma.taxi.count({ where: { status: 'PENDING_ADMIN' } });
+    const incidentCount = await prisma.incident.count();
+    const lostItemCount = await prisma.lostItem.count();
 
     return (
         <div className="space-y-6">
