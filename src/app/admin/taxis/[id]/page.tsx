@@ -22,7 +22,11 @@ export default async function TaxiDetailPage({ params }: { params: Promise<{ id:
     // Generate QR Code Data URL server-side
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taxi-qr-niger.vercel.app';
     const publicUrl = `${baseUrl}/taxi/${taxi.id}`;
-    const qrCodeDataUrl = await QRCode.toDataURL(publicUrl, { width: 300, margin: 2 });
+    const qrCodeDataUrl = await QRCode.toDataURL(publicUrl, {
+        width: 600,
+        margin: 2,
+        errorCorrectionLevel: 'L' // Low error correction = larger blocks = better for distance
+    });
 
     return (
         <div className="space-y-6">
