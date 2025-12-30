@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, email, password, licenseNumber } = body;
+        const { name, email, password, licenseNumber, taxi } = body;
 
         // Basic validation
         if (!name || !email || !password || !licenseNumber) {
@@ -40,20 +40,37 @@ export async function POST(request: Request) {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create Driver
-        const newDriver = await prisma.driver.create({
-            data: {
-                name,
-                email,
-                password: hashedPassword,
-                licenseNumber,
-            },
+        // Create Driver and potentially Taxi in a transaction
+        const result = await prisma.$transaction(async (tx) => {
+            const newDriver = await tx.driver.create({
+                data: {
+                    name,
+                    email,
+                    password: hashedPassword,
+                    licenseNumber,
+                },
+            });
+
+            if (taxi && taxi.plateNumber) {
+                await tx.taxi.create({
+                    data: {
+                        plateNumber: taxi.plateNumber,
+                        model: taxi.model || 'Inconnu',
+                        doorNumber: taxi.doorNumber,
+                        company: taxi.company,
+                        driverId: newDriver.id,
+                        status: 'PENDING_ADMIN',
+                    }
+                });
+            }
+
+            return newDriver;
         });
 
         return NextResponse.json(
             {
                 message: 'Compte créé avec succès',
-                driver: { id: newDriver.id, name: newDriver.name, email: newDriver.email }
+                driver: { id: result.id, name: result.name, email: result.email }
             },
             {
                 status: 201,
