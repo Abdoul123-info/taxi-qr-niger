@@ -122,9 +122,14 @@ export default async function TaxiDetailPage({ params }: { params: any }) {
         console.error("TaxiDetailPage Error:", error);
         return (
             <div className="p-8 text-center border-2 border-red-200 rounded-xl bg-red-50">
-                <h1 className="text-xl font-bold text-red-700 mb-2">Une erreur est survenue</h1>
-                <p className="text-gray-600 mb-4">{error.message || "Erreur de chargement des données"}</p>
-                <Link href="/admin/taxis" className="text-blue-600 underline">Retour à la liste</Link>
+                <h1 className="text-xl font-bold text-red-700 mb-2">Une erreur est survenue (Diagnostic)</h1>
+                <p className="text-red-600 font-mono text-sm mb-4">
+                    {error.name}: {error.message}
+                </p>
+                <div className="text-left bg-gray-900 text-green-400 p-4 rounded text-xs overflow-auto max-h-40 mb-4">
+                    <pre>{error.stack}</pre>
+                </div>
+                <Link href="/admin/taxis" className="text-blue-600 underline font-bold">Retour à la liste</Link>
             </div>
         );
     }
