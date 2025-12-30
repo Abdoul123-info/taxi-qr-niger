@@ -95,7 +95,14 @@ export default async function TaxiDetailPage({ params }: { params: Promise<{ id:
 
                 {/* QR Code Section (Client Component) */}
                 <div className="space-y-6">
-                    <TaxiQRSection taxi={taxi} qrCodeDataUrl={qrCodeDataUrl} />
+                    <TaxiQRSection
+                        taxi={{
+                            id: taxi.id,
+                            plateNumber: taxi.plateNumber,
+                            doorNumber: taxi.doorNumber
+                        }}
+                        qrCodeDataUrl={qrCodeDataUrl}
+                    />
                 </div>
 
             </div>
