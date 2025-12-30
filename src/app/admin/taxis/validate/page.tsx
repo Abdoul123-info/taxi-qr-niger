@@ -16,7 +16,7 @@ export default async function ValidateTaxiPage() {
         'use server';
         const taxiId = formData.get('taxiId') as string;
         await validateTaxi(taxiId);
-        redirect('/admin/taxis');
+        redirect(`/admin/taxis/${taxiId}`);
     }
 
     return (

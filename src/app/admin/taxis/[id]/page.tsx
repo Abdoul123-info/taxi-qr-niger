@@ -18,8 +18,9 @@ export default async function TaxiDetailPage({ params }: { params: Promise<{ id:
     }
 
     // Generate QR Code Data URL server-side
-    // Pointing to the public URL (assuming localhost:3000 for dev)
-    const publicUrl = `http://localhost:3000/taxi/${taxi.id}`;
+    // Pointing to the public production URL
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taxi-qr-niger.vercel.app';
+    const publicUrl = `${baseUrl}/taxi/${taxi.id}`;
     const qrCodeDataUrl = await QRCode.toDataURL(publicUrl, { width: 300, margin: 2 });
 
     return (
@@ -104,6 +105,24 @@ export default async function TaxiDetailPage({ params }: { params: Promise<{ id:
                             >
                                 Télécharger l'Image
                             </a>
+                            <button
+                                onClick={() => {
+                                    const win = window.open('', '_blank');
+                                    win?.document.write(`
+                                        <html>
+                                            <body style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; font-family:sans-serif;">
+                                                <h1 style="margin-bottom:20px;">Taxi ${taxi.plateNumber}</h1>
+                                                <img src="${qrCodeDataUrl}" style="width:500px;" />
+                                                <p style="margin-top:20px; font-size:24px; font-weight:bold;">#${taxi.doorNumber || "---"}</p>
+                                                <script>setTimeout(() => { window.print(); window.close(); }, 500);</script>
+                                            </body>
+                                        </html>
+                                    `);
+                                }}
+                                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-bold transition w-full"
+                            >
+                                Imprimer le QR Code
+                            </button>
                             <Link
                                 href={`/taxi/${taxi.id}`}
                                 target="_blank"
