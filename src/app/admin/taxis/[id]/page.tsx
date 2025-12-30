@@ -88,7 +88,10 @@ export default async function TaxiDetailPage({ params }: { params: Promise<{ id:
                                 <p className="text-xs text-gray-400 mt-1">Permis: {taxi.driver.licenseNumber || "---"}</p>
                             </div>
                         ) : (
-                            <AssignDriverButton taxiId={taxi.id} drivers={drivers} />
+                            <AssignDriverButton
+                                taxiId={taxi.id}
+                                drivers={drivers.map(d => ({ id: d.id, name: d.name }))}
+                            />
                         )}
                     </div>
                 </div>
