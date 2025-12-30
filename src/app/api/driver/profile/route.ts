@@ -5,20 +5,35 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const driverId = searchParams.get('id');
+        const taxiId = searchParams.get('taxiId');
 
-        if (!driverId) {
-            return NextResponse.json({ error: 'ID du chauffeur requis' }, { status: 400 });
+        if (!driverId && !taxiId) {
+            return NextResponse.json({ error: 'ID du chauffeur ou du taxi requis' }, { status: 400 });
         }
 
-        const driver = await prisma.driver.findUnique({
-            where: { id: driverId },
-            include: {
-                taxis: {
-                    take: 1, // Assume first taxi for profile purposes
-                    orderBy: { createdAt: 'desc' }
+        let driver;
+        if (driverId) {
+            driver = await prisma.driver.findUnique({
+                where: { id: driverId },
+                include: {
+                    taxis: {
+                        take: 1,
+                        orderBy: { createdAt: 'desc' }
+                    }
                 }
+            });
+        } else if (taxiId) {
+            const taxiData = await prisma.taxi.findUnique({
+                where: { id: taxiId },
+                include: { driver: true }
+            });
+            if (taxiData && taxiData.driver) {
+                driver = {
+                    ...taxiData.driver,
+                    taxis: [taxiData]
+                };
             }
-        });
+        }
 
         if (!driver) {
             return NextResponse.json({ error: 'Chauffeur introuvable' }, { status: 404 });
